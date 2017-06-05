@@ -8,6 +8,6 @@ deployment:
     commands:
 #      # Push to the docker hub
       - docker build --rm=false -t sysconjusticesystems/api-proxy:$CIRCLE_BUILD_NUM .
-      - docker push sysconjusticesystems/api-proxy:$CIRCLE_BUILD_NUM
+      - docker push sysconjusticesystems/api-proxy
 
 
