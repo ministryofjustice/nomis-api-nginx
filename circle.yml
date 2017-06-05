@@ -7,7 +7,8 @@ deployment:
     branch: master
     commands:
 #      # Push to the docker hub
-      - docker build --rm=false -t sysconjusticesystems/api-proxy:$CIRCLE_BUILD_NUM .
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker build --rm=false -t sysconjusticesystems/api-proxy .
       - docker push sysconjusticesystems/api-proxy
 
 
