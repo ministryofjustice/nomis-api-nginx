@@ -1,0 +1,19 @@
+machine:
+  services:
+    - docker
+
+test:
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+
+deployment:
+  mock:
+    branch: master
+    commands:
+      - NODE_ENV=production yarn build:
+#      # Push to the docker hub
+      - docker build --rm=false -t sysconjusticesystems/api-proxy:$CIRCLE_BUILD_NUM .
+      - docker push sysconjusticesystems/api-proxy:$CIRCLE_BUILD_NUM
+
+
