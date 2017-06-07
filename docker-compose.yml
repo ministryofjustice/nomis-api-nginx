@@ -1,7 +1,28 @@
 version: '3.1'
 services:
+  nginx-proxy:
+    image: sysconjusticesystems/api-proxy:latest
+    networks:
+      - nomis-network
+    container_name: api-proxy
+    ports:
+      - "4888:80"
+
+  elite2-api:
+    image: sysconjusticesystems/elite2-api:latest
+    networks:
+      - nomis-network
+    container_name: elite2-api
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev,nomis
+      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@10.200.1.45:1521:pvb_dev
+      - SECURITY_AUTHENICATION_HEADER=authorization
+
   elite2-web:
-    image: sysconjusticesystems/elite2-web
+    image: sysconjusticesystems/elite2-web:latest
+    networks:
+      - nomis-network
     container_name: elite2-web
     depends_on:
       - nginx-proxy
@@ -9,26 +30,15 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - SERVER_URL=http://api-proxy:8080/api
-
-  nginx-proxy:
-    image: sysconjusticesystems/api-proxy
-    container_name: api-proxy
-    ports:
-      - "8080:80"
+      - PORT=3000
+      - API_ENDPOINT_URL=http://elite2-api:8080/api/
+      - USE_API_GATEWAY_AUTH=no
 
   nomis-api:
     image: sysconjusticesystems/nomis-api:latest
+    networks:
+      - nomis-network
     container_name: nomis-api
     environment:
-      - VIRTUAL_HOST=nomis-api.local
-      - JAVA_OPTS=-Dnomisapi.jdbc.url=jdbc:oracle:thin:@10.200.1.40:1521:pvb_dev -Dnomisapi.jdbc.password=api_user
+      - JAVA_OPTS=-Dnomisapi.jdbc.url=jdbc:oracle:thin:@10.200.1.45:1521:pvb_dev -Dnomisapi.jdbc.password=api_user
 
-  elite2-api:
-    image: sysconjusticesystems/elite2-api
-    container_name: elite2-api
-    environment:
-      - VIRTUAL_HOST=elite2-api.local
-      - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=dev,nomis
-      - SPRING_DATASOURCE_URL=jdbc:oracle:thin:@10.200.1.40:1521:pvb_dev
