@@ -1,6 +1,6 @@
 version: '3.1'
 services:
-  nginx-proxy:
+  api-proxy:
     image: sysconjusticesystems/api-proxy:latest
     networks:
       - nomis-network
@@ -25,13 +25,13 @@ services:
       - nomis-network
     container_name: elite2-web
     depends_on:
-      - nginx-proxy
+      - api-proxy
       - elite2-api
     ports:
       - "3000:3000"
     environment:
       - PORT=3000
-      - API_ENDPOINT_URL=http://elite2-api:8080/api/
+      - API_ENDPOINT_URL=http://api-proxy/elite2api
       - USE_API_GATEWAY_AUTH=no
 
   nomis-api:
