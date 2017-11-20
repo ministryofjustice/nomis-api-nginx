@@ -11,8 +11,6 @@ deployment:
     branch: master
     commands:
 #      # Push to the docker hub
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker build --rm=false -t sysconjusticesystems/api-proxy .
-      - docker push sysconjusticesystems/api-proxy
+
 
 
